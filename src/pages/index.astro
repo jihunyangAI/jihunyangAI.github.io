@@ -10,9 +10,12 @@ const posts = (await getPosts()).slice(0, 4);
 
 <Base wide>
   <section class="hero">
-    <p class="kicker">기록</p>
-    <h1>천천히 쌓는 글</h1>
-    <p class="lede">{siteConfig.description}</p>
+    <img class="hero-mark" src={url("/blogicon.png")} alt="" width="88" height="88" />
+    <div>
+      <p class="kicker">기록</p>
+      <h1>천천히 쌓는 글</h1>
+      <p class="lede">{siteConfig.description}</p>
+    </div>
   </section>
   <section>
     <div class="section-heading">

@@ -96,11 +96,29 @@ a { color: inherit; }
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
   font-family: var(--serif);
   font-size: 1.35rem;
   font-weight: 560;
   letter-spacing: -0.03em;
   text-decoration: none;
+}
+
+.brand-mark,
+.hero-mark {
+  display: block;
+  flex: none;
+  object-fit: cover;
+  background: #111;
+  border: 1px solid var(--line);
+}
+
+.brand-mark {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.7rem;
 }
 
 .nav {
@@ -154,7 +172,21 @@ html:not([data-theme="dark"]) .when-dark {
   line-height: 1.2;
 }
 
-.hero { max-width: 40rem; margin-bottom: 3rem; }
+.hero {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.35rem 1.35rem;
+  align-items: center;
+  max-width: 46rem;
+  margin-bottom: 3rem;
+}
+
+.hero-mark {
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 1.35rem;
+  box-shadow: var(--shadow);
+}
 
 .hero h1, .page-title {
   margin-bottom: 0.8rem;
@@ -512,6 +544,8 @@ html[data-theme="dark"] .prose .astro-code span {
   .nav { order: 3; width: 100%; margin-left: 0; }
   .year-block { grid-template-columns: 1fr; gap: 0.2rem; }
   .page { padding-top: 2.2rem; }
+  .hero { grid-template-columns: 1fr; align-items: start; }
+  .hero-mark { width: 4.25rem; height: 4.25rem; }
   .hero h1, .page-title { font-size: 2.5rem; }
 }
 
