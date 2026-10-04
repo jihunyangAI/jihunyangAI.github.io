@@ -1,0 +1,43 @@
+---
+import { siteConfig } from "../config";
+import { url } from "../lib/url";
+
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+
+function isCurrent(path: string) {
+  const target = url(path).replace(/\/$/, "") || "/";
+  if (path === "/") return current === target;
+  if (path === "/blog/") {
+    return ["/blog/", "/tags/", "/categories/"].some((prefix) => {
+      const base = url(prefix).replace(/\/$/, "");
+      return current === base || current.startsWith(`${base}/`);
+    });
+  }
+  return current === target || current.startsWith(`${target}/`);
+}
+
+const items = [
+  { href: "/", label: "Home" },
+  { href: "/about/", label: "About" },
+  { href: "/blog/", label: "Blog" },
+];
+---
+
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href={url("/")}>{siteConfig.name}</a>
+    <nav class="nav" aria-label="주요">
+      {
+        items.map((item) => (
+          <a href={url(item.href)} aria-current={isCurrent(item.href) ? "page" : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <button type="button" class="theme-toggle" data-theme-toggle aria-label="색상 모드 전환">
+      <span class="when-light">다크</span>
+      <span class="when-dark">라이트</span>
+    </button>
+  </div>
+</header>

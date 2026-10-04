@@ -1,0 +1,73 @@
+---
+import { render } from "astro:content";
+import Base from "../../../../layouts/Base.astro";
+import { formatDate, formatMonth } from "../../../../lib/date";
+import { getPosts, readingMinutes } from "../../../../lib/posts";
+import { url } from "../../../../lib/url";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => {
+    const [year, month, slug] = post.id.replaceAll("\\", "/").split("/");
+    return { params: { year, month, slug }, props: { post } };
+  });
+}
+
+const posts = await getPosts();
+const { post } = Astro.props;
+const index = posts.findIndex((item) => item.id === post.id);
+const newer = posts[index - 1];
+const older = posts[index + 1];
+const { Content } = await render(post);
+const [year, month] = post.data.date.split("-");
+const minutes = readingMinutes(post.body);
+---
+
+<Base title={post.data.title} description={post.data.description}>
+  <article>
+    <header class="article-header">
+      <p class="kicker">
+        <a href={url(`/blog/${year}/${month}/`)}>{formatMonth(year, month)}</a>
+      </p>
+      <h1>{post.data.title}</h1>
+      <p class="byline">
+        <time datetime={post.data.date}>{formatDate(post.data.date)}</time>
+        <a href={url(`/categories/${post.data.categorySlug}/`)}>{post.data.category}</a>
+        <span>{minutes}분 읽기</span>
+        {post.data.draft && <span class="draft">초고</span>}
+      </p>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+    {
+      post.data.tags.length > 0 && (
+        <p class="tags">
+          {post.data.tags.map((tag) => (
+            <a class="tag" href={url(`/tags/${tag.slug}/`)}>
+              {tag.name}
+            </a>
+          ))}
+        </p>
+      )
+    }
+    {
+      (newer || older) && (
+        <nav class="pager" aria-label="다른 글">
+          {newer && (
+            <a href={url(`/blog/${newer.id}/`)}>
+              <span>더 최근</span>
+              <strong>{newer.data.title}</strong>
+            </a>
+          )}
+          {older && (
+            <a href={url(`/blog/${older.id}/`)}>
+              <span>더 이전</span>
+              <strong>{older.data.title}</strong>
+            </a>
+          )}
+        </nav>
+      )
+    }
+  </article>
+</Base>

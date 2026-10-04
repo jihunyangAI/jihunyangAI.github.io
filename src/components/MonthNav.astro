@@ -1,0 +1,57 @@
+---
+import { url } from "../lib/url";
+
+interface Month {
+  year: string;
+  month: string;
+}
+
+interface Props {
+  months: Month[];
+  current?: Month;
+}
+
+const { months, current } = Astro.props;
+const index = current
+  ? months.findIndex((month) => month.year === current.year && month.month === current.month)
+  : -1;
+const newer = index > 0 ? months[index - 1] : undefined;
+const older = index >= 0 && index < months.length - 1 ? months[index + 1] : undefined;
+const label = (month: Month) => `${month.year}.${month.month}`;
+---
+
+<nav class="month-nav" aria-label="월별 글">
+  {
+    months.map((month) => {
+      const active = current?.year === month.year && current?.month === month.month;
+      return (
+        <a href={url(`/blog/${month.year}/${month.month}/`)} aria-current={active ? "page" : undefined}>
+          {label(month)}
+        </a>
+      );
+    })
+  }
+</nav>
+{
+  current && (newer || older) && (
+    <p class="month-switch">
+      {newer && <a href={url(`/blog/${newer.year}/${newer.month}/`)}>최근 달 {label(newer)}</a>}
+      {older && <a href={url(`/blog/${older.year}/${older.month}/`)}>이전 달 {label(older)}</a>}
+    </p>
+  )
+}
+
+<style>
+  .month-switch {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: -0.7rem 0 1.5rem;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .month-switch a {
+    color: var(--accent);
+  }
+</style>

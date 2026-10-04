@@ -1,0 +1,26 @@
+---
+import Base from "../../layouts/Base.astro";
+import { collectCategories, getPosts } from "../../lib/posts";
+import { url } from "../../lib/url";
+
+const categories = collectCategories(await getPosts());
+---
+
+<Base title="카테고리" description="글을 나눈 카테고리." wide>
+  <header>
+    <p class="kicker">Blog</p>
+    <h1 class="page-title">카테고리</h1>
+  </header>
+  <ul class="taxonomy-list">
+    {
+      categories.map((category) => (
+        <li>
+          <a href={url(`/categories/${category.slug}/`)}>
+            <span>{category.name}</span>
+            <span class="count">{category.posts.length}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Base>

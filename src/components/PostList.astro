@@ -1,0 +1,36 @@
+---
+import { formatDate } from "../lib/date";
+import type { Post } from "../lib/posts";
+import { url } from "../lib/url";
+
+interface Props {
+  posts: Post[];
+  level?: 3 | 4;
+}
+
+const { posts, level = 3 } = Astro.props;
+const TitleTag = level === 4 ? "h4" : "h3";
+---
+
+{
+  posts.length === 0 ? (
+    <p class="empty">아직 글이 없습니다.</p>
+  ) : (
+    <ol class="post-list">
+      {posts.map((post) => (
+        <li>
+          <article>
+            <p class="post-meta">
+              <time datetime={post.data.date}>{formatDate(post.data.date)}</time>
+              {post.data.draft && <span class="draft">초고</span>}
+            </p>
+            <TitleTag class="post-title">
+              <a href={url(`/blog/${post.id}/`)}>{post.data.title}</a>
+            </TitleTag>
+            <p class="post-description">{post.data.description}</p>
+          </article>
+        </li>
+      ))}
+    </ol>
+  )
+}

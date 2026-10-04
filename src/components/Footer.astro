@@ -1,0 +1,13 @@
+---
+import { siteConfig } from "../config";
+import { url } from "../lib/url";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <p>© {year} {siteConfig.author}</p>
+    <a href={url("/rss.xml")}>RSS</a>
+  </div>
+</footer>

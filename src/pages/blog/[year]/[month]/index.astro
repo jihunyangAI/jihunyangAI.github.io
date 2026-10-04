@@ -1,0 +1,33 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import MonthNav from "../../../../components/MonthNav.astro";
+import PostList from "../../../../components/PostList.astro";
+import { formatMonth } from "../../../../lib/date";
+import { getPosts, listMonths } from "../../../../lib/posts";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const months = listMonths(posts);
+
+  return months.map((month) => ({
+    params: { year: month.year, month: month.month },
+    props: {
+      posts: posts.filter((post) => post.data.date.startsWith(`${month.year}-${month.month}`)),
+    },
+  }));
+}
+
+const { year, month } = Astro.params;
+const { posts } = Astro.props;
+const months = listMonths(await getPosts());
+const label = formatMonth(year, month);
+---
+
+<Base title={label} description={`${label}에 쓴 글.`} wide>
+  <header>
+    <p class="kicker">Blog</p>
+    <h1 class="page-title">{label}</h1>
+  </header>
+  <MonthNav months={months} current={{ year, month }} />
+  <PostList posts={posts} />
+</Base>

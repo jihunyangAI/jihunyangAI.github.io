@@ -1,0 +1,24 @@
+---
+import Base from "../layouts/Base.astro";
+import PostList from "../components/PostList.astro";
+import { siteConfig } from "../config";
+import { getPosts } from "../lib/posts";
+import { url } from "../lib/url";
+
+const posts = (await getPosts()).slice(0, 4);
+---
+
+<Base wide>
+  <section class="hero">
+    <p class="kicker">기록</p>
+    <h1>천천히 쌓는 글</h1>
+    <p class="lede">{siteConfig.description}</p>
+  </section>
+  <section>
+    <div class="section-heading">
+      <h2>최근 글</h2>
+      <a href={url("/blog/")}>모든 글</a>
+    </div>
+    <PostList posts={posts} />
+  </section>
+</Base>

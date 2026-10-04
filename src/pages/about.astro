@@ -1,0 +1,19 @@
+---
+import { getEntry, render } from "astro:content";
+import Base from "../layouts/Base.astro";
+
+const about = await getEntry("pages", "about");
+if (!about) throw new Error("src/content/pages/about.md 파일이 필요합니다.");
+
+const { Content } = await render(about);
+---
+
+<Base title={about.data.title} description={about.data.description}>
+  <header class="article-header">
+    <p class="kicker">About</p>
+    <h1>{about.data.title}</h1>
+  </header>
+  <div class="prose">
+    <Content />
+  </div>
+</Base>

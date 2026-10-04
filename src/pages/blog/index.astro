@@ -1,0 +1,42 @@
+---
+import Base from "../../layouts/Base.astro";
+import MonthNav from "../../components/MonthNav.astro";
+import PostList from "../../components/PostList.astro";
+import { formatMonth } from "../../lib/date";
+import { getPosts, groupByYear, listMonths } from "../../lib/posts";
+import { url } from "../../lib/url";
+
+const posts = await getPosts();
+const years = groupByYear(posts);
+const months = listMonths(posts);
+---
+
+<Base title="Blog" description="월별로 모은 글." wide>
+  <header>
+    <p class="kicker">Blog</p>
+    <h1 class="page-title">글</h1>
+    <p class="page-intro">공개된 글을 날짜순으로 모았습니다. 글이 있는 달만 아래에 있습니다.</p>
+  </header>
+  <p class="quiet-links">
+    <a href={url("/categories/")}>카테고리</a>
+    <a href={url("/tags/")}>태그</a>
+  </p>
+  <MonthNav months={months} />
+  {
+    years.map((year) => (
+      <section class="year-block">
+        <h2>{year.year}</h2>
+        <div>
+          {year.months.map((month) => (
+            <section class="month-group">
+              <h3>
+                <a href={url(`/blog/${month.year}/${month.month}/`)}>{formatMonth(month.year, month.month)}</a>
+              </h3>
+              <PostList posts={month.posts} level={4} />
+            </section>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+</Base>
